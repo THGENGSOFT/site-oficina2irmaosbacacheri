@@ -1,0 +1,666 @@
+/* ==========================================================================
+   1. DESIGN TOKENS
+   ========================================================================== */
+:root {
+    --color-white: #FFFFFF;
+    --color-gray-light: #E0E0E0;
+    --color-gray-medium: #757575;
+    --color-gray-dark: #212121;
+
+    --color-brand-red: #D32F2F;
+    --color-brand-red-hover: #B71C1C;
+
+    --color-whatsapp: #25D366;
+    --color-whatsapp-hover: #128C7E;
+
+    --color-accent: #FFC107;
+
+    --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 4rem;
+    --border-radius: 6px;
+    --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.08);
+
+    /* Âncoras — compensa a altura do header em qualquer scroll */
+    --header-height: 116px;
+}
+
+/* ==========================================================================
+   2. RESET & BASE
+   ========================================================================== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    /* Garante que âncoras não fiquem atrás do header (se ele for fixo) */
+    scroll-padding-top: var(--header-height);
+}
+
+body {
+    font-family: var(--font-primary);
+    color: var(--color-gray-dark);
+    background-color: var(--color-gray-light);
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    color: var(--color-gray-dark);
+    margin-bottom: var(--spacing-md);
+    font-weight: 800;
+}
+
+a {
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Foco visível para acessibilidade via teclado */
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--color-brand-red);
+    outline-offset: 3px;
+    border-radius: var(--border-radius);
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+/* ==========================================================================
+   3. COMPONENTES E BOTÕES
+   ========================================================================== */
+.btn-primary {
+    display: inline-block;
+    background-color: var(--color-brand-red);
+    color: var(--color-white);
+    padding: 14px 28px;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-brand-red-hover);
+    transform: translateY(-2px);
+    color: var(--color-white);
+}
+
+.btn-whatsapp-nav {
+    display: inline-block;
+    background-color: var(--color-whatsapp);
+    color: var(--color-white);
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp-nav:hover {
+    background-color: var(--color-whatsapp-hover);
+    color: var(--color-white);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   4. HEADER E NAVEGAÇÃO
+   ========================================================================== */
+.site-header {
+    background-color: var(--color-white);
+    border-bottom: 6px solid var(--color-brand-red);
+    padding: var(--spacing-sm) 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.site-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.logo-link {
+    display: inline-flex;
+    align-items: center;
+}
+
+.site-logo {
+    max-height: 100px;
+    width: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.site-logo:hover {
+    transform: scale(1.02);
+}
+
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    gap: var(--spacing-lg);
+}
+
+.main-nav a {
+    color: var(--color-gray-dark);
+    font-weight: 600;
+}
+
+.main-nav a:hover {
+    color: var(--color-brand-red);
+}
+
+/* ==========================================================================
+   5. HERO SECTION
+   ========================================================================== */
+.hero {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 70vh;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(33, 33, 33, 0.95) 0%, rgba(33, 33, 33, 0.6) 100%);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+}
+
+.hero-content h1 {
+    color: var(--color-white);
+    font-size: 3rem;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-md);
+}
+
+.hero-content p {
+    color: var(--color-gray-light);
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+/* ==========================================================================
+   6. SERVIÇOS
+   ========================================================================== */
+.services {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--color-gray-light);
+}
+
+.services h2 {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: var(--spacing-xl);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.service-card {
+    background-color: var(--color-white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+    border-top: 4px solid var(--color-gray-dark);
+    transition: transform 0.3s ease, border-top-color 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    border-top-color: var(--color-brand-red);
+}
+
+.service-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+/* ==========================================================================
+   7. NOSSA HISTÓRIA
+   ========================================================================== */
+.history {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--color-white);
+}
+
+.history-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    align-items: center;
+}
+
+.history-content h2 {
+    font-size: 2.2rem;
+}
+
+.history-content p {
+    margin-bottom: var(--spacing-md);
+    font-size: 1.1rem;
+}
+
+.history-image img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+    border: 4px solid var(--color-gray-light);
+}
+
+/* ==========================================================================
+   8. AVALIAÇÕES
+   ========================================================================== */
+.reviews {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--color-gray-light);
+}
+
+.reviews h2 {
+    text-align: center;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.review-card {
+    background-color: var(--color-white);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+    text-align: center;
+    border: 1px solid var(--color-gray-light);
+}
+
+.review-stars {
+    color: var(--color-accent);
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-sm);
+    letter-spacing: 2px;
+}
+
+.review-text {
+    font-style: italic;
+    margin-bottom: var(--spacing-md);
+}
+
+.review-author {
+    font-weight: bold;
+    color: var(--color-gray-dark);
+}
+
+/* ==========================================================================
+   9. LOCALIZAÇÃO
+   ========================================================================== */
+.location {
+    padding-top: var(--spacing-xl);
+    background-color: var(--color-white);
+    text-align: center;
+}
+
+.location h2 {
+    margin-bottom: var(--spacing-sm);
+}
+
+.location p {
+    margin-bottom: var(--spacing-lg);
+    font-weight: bold;
+    color: var(--color-gray-medium);
+}
+
+.map-container {
+    width: 100%;
+    display: block;
+    line-height: 0; /* remove gap abaixo do iframe */
+}
+
+.map-container iframe {
+    display: block;
+}
+
+/* ==========================================================================
+   10. FOOTER
+   ========================================================================== */
+.site-footer {
+    background-color: var(--color-gray-dark);
+    border-top: 5px solid var(--color-brand-red);
+    color: var(--color-white);
+    padding: var(--spacing-xl) 0 var(--spacing-lg);
+}
+
+.site-footer h3 {
+    color: var(--color-white);
+    margin-bottom: var(--spacing-md);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.footer-info p,
+.footer-hours p {
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-gray-light);
+}
+
+/* Tag <address> herda o estilo do footer sem itálico padrão */
+address {
+    font-style: normal;
+}
+
+/* ==========================================================================
+   SUB-SEÇÃO: BARRA INFERIOR (COPYRIGHT E ADMIN)
+   ========================================================================== */
+.footer-bottom {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Linha divisória super sutil */
+}
+
+.footer-bottom-flex {
+    display: flex;
+    justify-content: center; /* Centraliza o texto perfeitamente */
+    align-items: center;
+    position: relative; /* Define o limite para o cadeado absoluto */
+    padding: 0 var(--spacing-md);
+}
+
+.footer-bottom p {
+    font-size: 0.75rem;
+    color: var(--color-gray-medium);
+    margin: 0;
+    text-align: center;
+}
+
+/* O Segredo: O Cadeado */
+.admin-lock {
+    position: center; /* Centraliza verticalmente dentro do contêiner flex */
+    right: var(--spacing-md); /* Prende o cadeado na extrema direita do contêiner */
+    color: var(--color-gray-medium);
+    opacity: 0.2; 
+    transition: all 0.3s ease;
+    display: flex;
+    padding: 5px;
+}
+
+.admin-lock:hover {
+    opacity: 1; 
+    color: var(--color-white);
+    transform: scale(1.1); 
+}
+
+/* ==========================================================================
+   11. FAB WHATSAPP
+   ========================================================================== */
+.floating-whatsapp {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--color-whatsapp);
+    color: var(--color-white);
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    /* Animação e hover gerenciados separadamente para não conflitarem */
+    animation: pulse 2.5s infinite;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.floating-whatsapp:hover {
+    background-color: var(--color-whatsapp-hover);
+    color: var(--color-white);
+    box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+    animation-play-state: paused; /* pausa o pulse durante hover */
+}
+
+@keyframes pulse {
+    0%,
+    100% { transform: scale(1); }
+    50%   { transform: scale(1.05); }
+}
+
+/* ==========================================================================
+   X. CALCULADORA DE ORÇAMENTOS
+   ========================================================================== */
+.budget-calculator {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--color-white);
+}
+
+.calc-wrapper {
+    background-color: var(--color-gray-light);
+    border-radius: 12px;
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-card);
+    border: 1px solid #d1d5db;
+}
+
+.calc-header {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.calc-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.calc-group h3 {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-brand-red);
+}
+
+.calc-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+/* Cards Interativos (Radio e Checkbox escondidos para melhor UX) */
+.calc-radio-card input,
+.calc-checkbox-card input {
+    display: none;
+}
+
+.card-content {
+    display: block;
+    padding: 15px;
+    background: var(--color-white);
+    border: 2px solid #cbd5e1;
+    border-radius: var(--border-radius);
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.card-content:hover {
+    border-color: var(--color-gray-medium);
+}
+
+/* Estado Selecionado */
+.calc-radio-card input:checked + .card-content {
+    border-color: var(--color-brand-red);
+    background-color: #FEF2F2;
+    color: var(--color-brand-red);
+}
+
+.calc-checkbox-card input:checked + .card-content {
+    border-color: var(--color-whatsapp);
+    background-color: #F0FDF4;
+    color: var(--color-whatsapp-hover);
+}
+
+/* Painel de Resultado */
+.calc-result-box {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 2px dashed #cbd5e1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.price-range {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-gray-dark);
+}
+
+.price-range small {
+    font-size: 1rem;
+    color: var(--color-gray-medium);
+    font-weight: normal;
+}
+
+.disclaimer {
+    font-size: 0.85rem;
+    color: var(--color-gray-medium);
+    margin-top: 5px;
+}
+
+.btn-large {
+    font-size: 1.1rem;
+    padding: 16px 32px;
+}
+
+.btn-large:disabled {
+    background-color: #9CA3AF;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* ==========================================================================
+   12. ACESSIBILIDADE — MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ==========================================================================
+   13. RESPONSIVIDADE MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+    :root {
+        --header-height: 200px; /* header empilhado é mais alto no mobile */
+    }
+
+    .site-header .container {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+    }
+
+    .site-logo {
+        max-height: 80px;
+    }
+
+    .main-nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--spacing-sm);
+    }
+
+    .hero {
+        height: auto;
+        min-height: 450px;
+        padding: var(--spacing-xl) 0;
+        text-align: center;
+        background-position: center center;
+    }
+
+    .hero-content {
+        margin: 0 auto;
+        padding: 0 var(--spacing-sm);
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .btn-primary {
+        display: block;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    .btn-whatsapp-nav {
+        width: 100%;
+        margin-top: var(--spacing-sm);
+    }
+
+    .history-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+        text-align: center;
+    }
+
+    .footer-grid {
+        text-align: center;
+    }
+
+    .floating-whatsapp {
+        bottom: 20px;
+        right: 20px;
+        width: 55px;
+        height: 55px;
+    }
+
+    .floating-whatsapp svg {
+        width: 30px;
+        height: 30px;
+    }
+}

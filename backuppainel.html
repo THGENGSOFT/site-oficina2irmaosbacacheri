@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Gestor | Auto Mecânica 2 Irmãos</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- jsPDF: Geração de PDF Vetorial Client-side -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { 
+            primary: '#D32F2F', 
+            'primary-hover': '#B71C1C',
+            dark: '#212121', 
+            surface: '#FFFFFF',
+            background: '#F3F4F6'
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-gray-800 font-sans flex items-center justify-center min-h-screen p-4 md:p-6 transition-all duration-500">
+
+  <!-- ==========================================
+       TELA DE LOGIN (UI LOCKER)
+       ========================================== -->
+  <div id="login-screen" class="max-w-md w-full bg-surface border border-gray-200 rounded-2xl p-8 md:p-10 shadow-2xl text-center relative overflow-hidden">
+    <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
+    
+    <div class="mx-auto mb-6 bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg">
+        <i data-lucide="wrench" class="w-8 h-8"></i>
+    </div>
+    
+    <h2 class="text-2xl font-black text-dark uppercase tracking-widest mb-1">2 Irmãos</h2>
+    <p class="text-gray-500 text-sm mb-8 font-semibold uppercase tracking-wider">Sistema de Gestão Interna</p>
+    
+    <input type="password" id="pass-input" class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-4 text-center text-2xl tracking-[0.5em] text-dark focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none mb-6 transition-colors font-bold" placeholder="••••" maxlength="4" autocomplete="off">
+    
+    <button id="btn-login" class="w-full bg-primary text-white font-bold uppercase tracking-wide px-6 py-4 rounded-lg hover:bg-primary-hover active:scale-95 transition-all shadow-md">
+      Acessar Painel
+    </button>
+    
+    <p id="login-error" class="text-primary text-sm font-semibold mt-4 opacity-0 transition-opacity">Chave de acesso incorreta.</p>
+  </div>
+
+  <!-- ==========================================
+       PAINEL DA CALCULADORA (APP DASHBOARD)
+       ========================================== -->
+  <!-- Correção 1: 'mx-auto' adicionado aqui para garantir centralização horizontal -->
+  <div id="app-container" class="w-full max-w-5xl mx-auto hidden">
+    <div class="bg-surface border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+        
+        <!-- Header Principal -->
+        <div class="bg-dark text-white p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b-4 border-primary">
+            <div class="flex items-center gap-4">
+                <div class="bg-primary p-3 rounded-lg hidden sm:block"><i data-lucide="settings-2" class="w-8 h-8 text-white"></i></div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black uppercase tracking-tight">Gerador de Orçamentos</h1>
+                    <p class="text-gray-400 text-xs md:text-sm">Auto Mecânica 2 Irmãos (Desde 1991)</p>
+                </div>
+            </div>
+            <!-- Número do orçamento agora é EDITÁVEL -->
+            <div class="text-left md:text-right w-full md:w-auto bg-gray-800/50 p-2 md:p-0 md:bg-transparent rounded">
+                <label for="num_orcamento" class="block text-xs text-gray-400 font-semibold uppercase mb-1">Nº do Orçamento</label>
+                <input type="text" id="num_orcamento" class="block w-full md:w-40 bg-gray-800 text-white font-mono font-bold text-lg md:text-right px-3 py-1.5 rounded border border-gray-600 outline-none hover:border-primary focus:border-primary focus:ring-1 focus:ring-primary transition cursor-text" title="Você pode editar este número">
+            </div>
+        </div>
+
+        <div class="p-4 md:p-8 space-y-8">
+            
+            <!-- Sec 1: Dados do Cliente e Veículo -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-5 rounded-xl border border-gray-200">
+                <div>
+                    <h2 class="text-sm font-bold text-primary mb-4 uppercase tracking-widest flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i> Dados do Cliente</h2>
+                    <div class="space-y-3">
+                        <input type="text" id="cliente_nome" placeholder="Nome do Cliente / Empresa" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-dark focus:border-primary outline-none transition text-sm">
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="text" id="cliente_doc" placeholder="CPF/CNPJ" class="w-full sm:w-1/2 bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-dark focus:border-primary outline-none transition text-sm">
+                            <input type="text" id="cliente_contato" placeholder="WhatsApp / Telefone" class="w-full sm:w-1/2 bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-dark focus:border-primary outline-none transition text-sm">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold text-primary mb-4 uppercase tracking-widest flex items-center gap-2"><i data-lucide="car" class="w-4 h-4"></i> Dados do Veículo</h2>
+                    <div class="space-y-3">
+                        <input type="text" id="veiculo_modelo" placeholder="Modelo do Veículo (Ex: VW Gol 1.6)" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-dark focus:border-primary outline-none transition text-sm">
+                        <input type="text" id="veiculo_placa" placeholder="Placa (Ex: ABC-1234)" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-dark focus:border-primary outline-none transition uppercase text-sm">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sec 2: Inserção de Itens (Catálogo + Tabela) -->
+            <section>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-4 border-b border-gray-200 pb-4 gap-4">
+                    <h2 class="text-lg font-black text-dark flex items-center gap-2">
+                        <i data-lucide="list-checks" class="w-5 h-5 text-primary"></i> Peças e Serviços
+                    </h2>
+                    
+                    <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                        <select id="catalogo-master" class="flex-1 p-2.5 border border-gray-300 rounded-lg focus:border-primary outline-none bg-white text-sm font-semibold">
+                            <option value="" data-preco="0">-- SELECIONAR DO CATÁLOGO --</option>
+                            
+                            <optgroup label="Mecânica Geral e Revisão">
+                                <option value="Óleo de Motor 10W40 Semissintético (L)" data-preco="45">Óleo 10W40 Semissintético (L)</option>
+                                <option value="Óleo de Motor 5W30 Sintético (L)" data-preco="55">Óleo 5W30 Sintético (L)</option>
+                                <option value="Filtro de Óleo do Motor" data-preco="35">Filtro de Óleo</option>
+                                <option value="Filtro de Ar do Motor" data-preco="45">Filtro de Ar</option>
+                                <option value="Filtro de Combustível" data-preco="40">Filtro de Combustível</option>
+                                <option value="Kit Correia Dentada + Tensor" data-preco="350">Kit Correia Dentada (Padrão)</option>
+                                <option value="Mão de Obra: Revisão Básica (Óleo/Filtros)" data-preco="180">M.O. Revisão Básica</option>
+                                <option value="Mão de Obra: Troca Correia Dentada" data-preco="350">M.O. Troca Correia Dentada</option>
+                            </optgroup>
+
+                            <optgroup label="Freios e Suspensão">
+                                <option value="Pastilha de Freio Dianteira (Jogo)" data-preco="120">Pastilhas Dianteiras</option>
+                                <option value="Disco de Freio Dianteiro (Par)" data-preco="250">Discos de Freio (Par)</option>
+                                <option value="Fluido de Freio DOT 4" data-preco="45">Fluido de Freio DOT 4</option>
+                                <option value="Amortecedor Dianteiro (Unidade)" data-preco="350">Amortecedor Dianteiro (Und)</option>
+                                <option value="Kit Batente/Coifa Suspensão (Lado)" data-preco="90">Kit Batente Suspensão (Lado)</option>
+                                <option value="Mão de Obra: Manutenção Freios" data-preco="180">M.O. Troca Pastilha/Disco</option>
+                                <option value="Mão de Obra: Suspensão" data-preco="250">M.O. Troca Amortecedor/Batente</option>
+                            </optgroup>
+
+                            <optgroup label="Injeção Eletrônica e Elétrica">
+                                <option value="Limpeza de Bicos Injetores (M.O. + Produto)" data-preco="180">Limpeza de Bicos Injetores</option>
+                                <option value="Jogo de Velas de Ignição" data-preco="140">Jogo de Velas (Padrão)</option>
+                                <option value="Diagnóstico Computadorizado (Scanner)" data-preco="100">Scanner / Diagnóstico</option>
+                            </optgroup>
+
+                            <optgroup label="Alinhamento e Balanceamento">
+                                <option value="Alinhamento 3D Computadorizado" data-preco="80">Alinhamento 3D</option>
+                                <option value="Balanceamento de Rodas (Cada)" data-preco="20">Balanceamento (Und)</option>
+                            </optgroup>
+                            
+                            <optgroup label="Linha Diesel (Utilitários)">
+                                <option value="Filtro de Combustível Diesel" data-preco="150">Filtro Diesel</option>
+                                <option value="Limpeza de Válvula EGR" data-preco="450">Limpeza Válvula EGR</option>
+                                <option value="Diagnóstico Avançado Diesel" data-preco="250">Diagnóstico Sistema Diesel</option>
+                            </optgroup>
+                        </select>
+                        <button onclick="addFromCatalog()" class="bg-dark hover:bg-black text-white px-5 py-2.5 rounded-lg text-sm font-bold transition whitespace-nowrap w-full sm:w-auto">Adicionar</button>
+                    </div>
+                </div>
+                
+                <!-- Tabela Dinâmica com Rolagem no Mobile -->
+                <div class="overflow-x-auto border border-gray-200 rounded-lg shadow-sm">
+                    <table class="w-full text-left border-collapse bg-white min-w-[600px]">
+                        <thead class="bg-gray-100 text-gray-600 uppercase text-[10px] font-bold tracking-wider">
+                            <tr>
+                                <th class="p-3 border-b border-gray-200">Descrição do Serviço / Peça</th>
+                                <th class="p-3 border-b border-gray-200 w-20 text-center">Qtd</th>
+                                <th class="p-3 border-b border-gray-200 w-32 text-right">Unitário (R$)</th>
+                                <th class="p-3 border-b border-gray-200 w-32 text-right">Subtotal</th>
+                                <th class="p-3 border-b border-gray-200 w-12 text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-itens" class="text-sm">
+                            <!-- Linhas inseridas via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button onclick="addEmptyRow()" class="mt-4 text-sm font-bold text-primary hover:text-primary-hover flex items-center gap-1 transition w-full sm:w-auto justify-center sm:justify-start">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> Inserir Item Avulso (Manual)
+                </button>
+            </section>
+
+            <!-- Sec 3: Fechamento (Totais e Ações) -->
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-end pt-4 border-t border-gray-200">
+                <!-- Prazos -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Previsão de Entrega / Prazo</label>
+                        <input type="text" id="cond_prazo" value="A combinar" class="w-full p-2 border border-gray-300 rounded outline-none bg-white text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-1 uppercase">Condição de Pagamento</label>
+                        <input type="text" id="cond_pgto" value="PIX / Cartão de Crédito" class="w-full p-2 border border-gray-300 rounded outline-none bg-white text-sm">
+                    </div>
+                </div>
+
+                <!-- Painel Financeiro -->
+                <div class="bg-dark text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-2xl rounded-full pointer-events-none"></div>
+                    
+                    <div class="relative z-10 flex flex-col gap-3">
+                        <div class="flex justify-between text-gray-400 text-sm font-semibold">
+                            <span>Subtotal</span>
+                            <span id="txt-subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between items-center text-gray-400 text-sm font-semibold">
+                            <span>Desconto Ofertado (R$)</span>
+                            <input type="number" step="0.01" id="desconto" value="0" oninput="calculateTotal()" class="w-24 p-1.5 bg-gray-800 border border-gray-600 rounded text-right text-white outline-none focus:border-primary transition">
+                        </div>
+                        <div class="flex justify-between items-end mt-2 pt-4 border-t border-gray-700">
+                            <span class="text-sm font-bold text-gray-300 uppercase tracking-widest">TOTAL A PAGAR</span>
+                            <span id="txt-total" class="text-3xl md:text-4xl font-black text-white">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ações Finais -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4">
+                <button onclick="copiarWhatsApp()" class="bg-gray-200 hover:bg-gray-300 text-dark font-bold py-3.5 px-2 rounded-xl transition text-sm flex justify-center items-center gap-2 w-full shadow-sm">
+                    <i data-lucide="copy" class="w-4 h-4"></i> <span class="hidden md:inline">Copiar Orçamento</span><span class="md:hidden">Copiar</span>
+                </button>
+                <button onclick="enviarWhatsApp()" class="bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-3.5 px-2 rounded-xl transition text-sm shadow-md flex justify-center items-center gap-2 w-full">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i> Enviar Whats
+                </button>
+                <button onclick="gerarPDF()" id="btn-pdf" class="bg-primary hover:bg-primary-hover text-white font-bold py-3.5 px-2 rounded-xl transition text-sm shadow-md flex justify-center items-center gap-2 w-full">
+                    <i data-lucide="file-text" class="w-4 h-4"></i> Gerar PDF Oficial
+                </button>
+            </div>
+
+        </div>
+    </div>
+  </div>
+
+  <script>
+    // Inicialização dos ícones
+    lucide.createIcons();
+
+    // ==========================================
+    // LÓGICA DE LOGIN
+    // ==========================================
+    const passInput = document.getElementById('pass-input');
+    const btnLogin = document.getElementById('btn-login');
+    const loginError = document.getElementById('login-error');
+    const loginScreen = document.getElementById('login-screen');
+    const appContainer = document.getElementById('app-container');
+
+    // Senha padrão de teste: 1991
+    btnLogin.addEventListener('click', () => {
+        if (passInput.value === '1991') {
+            loginScreen.classList.add('hidden');
+            document.body.classList.remove('items-center', 'justify-center', 'min-h-screen');
+            document.body.classList.add('py-4', 'md:py-10'); 
+            appContainer.classList.remove('hidden');
+            initDashboard();
+        } else {
+            loginError.classList.remove('opacity-0');
+            passInput.value = '';
+            setTimeout(() => loginError.classList.add('opacity-0'), 2500);
+        }
+    });
+    passInput.addEventListener('keypress', e => { if (e.key === 'Enter') btnLogin.click(); });
+
+    // ==========================================
+    // LÓGICA DA CALCULADORA E TABELA
+    // ==========================================
+    const currencyFormat = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    function initDashboard() {
+        const d = new Date();
+        document.getElementById('num_orcamento').value = `2I-${d.getFullYear().toString().substr(-2)}${(d.getMonth()+1).toString().padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
+        addEmptyRow(); 
+    }
+
+    function addFromCatalog() {
+        const s = document.getElementById('catalogo-master');
+        if (!s.value) return;
+        createRow(s.value, 1, s.options[s.selectedIndex].getAttribute('data-preco'));
+        s.value = "";
+    }
+
+    function addEmptyRow() { createRow("", 1, "0"); }
+
+    function createRow(nome, qtd, preco) {
+        const tbody = document.getElementById('lista-itens');
+        const tr = document.createElement('tr');
+        tr.className = "border-b border-gray-100 hover:bg-gray-50 transition-colors";
+        tr.innerHTML = `
+            <td class="p-2 min-w-[200px]"><input type="text" value="${nome}" placeholder="Nome do item..." class="input-nome w-full p-2 outline-none bg-transparent font-medium text-dark"></td>
+            <td class="p-2"><input type="number" value="${qtd}" oninput="calculateTotal()" class="input-qtd w-full p-2 text-center outline-none bg-transparent border border-gray-200 rounded focus:border-primary" min="0.5" step="0.5"></td>
+            <td class="p-2"><input type="number" step="0.01" value="${preco}" oninput="calculateTotal()" class="input-valor w-full p-2 text-right outline-none bg-transparent border border-gray-200 rounded focus:border-primary"></td>
+            <td class="p-2 text-right font-bold text-dark cell-subtotal pt-4 whitespace-nowrap">R$ 0,00</td>
+            <td class="p-2 text-center pt-3"><button onclick="this.parentElement.parentElement.remove(); calculateTotal();" class="text-gray-400 hover:text-primary transition" title="Remover item"><i data-lucide="trash-2" class="w-5 h-5 mx-auto"></i></button></td>
+        `;
+        tbody.appendChild(tr);
+        lucide.createIcons({ root: tr });
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        let subtotal = 0;
+        document.querySelectorAll('#lista-itens tr').forEach(row => {
+            const qtd = parseFloat(row.querySelector('.input-qtd').value || 0);
+            const valor = parseFloat(row.querySelector('.input-valor').value || 0);
+            const linhaSub = qtd * valor;
+            row.querySelector('.cell-subtotal').innerText = currencyFormat.format(linhaSub);
+            subtotal += linhaSub;
+        });
+        
+        let descontoReal = parseFloat(document.getElementById('desconto').value || 0);
+        
+        if(descontoReal > subtotal) {
+            descontoReal = subtotal;
+            document.getElementById('desconto').value = subtotal.toFixed(2);
+        }
+
+        const totalFinal = subtotal - descontoReal;
+        
+        document.getElementById('txt-subtotal').innerText = currencyFormat.format(subtotal);
+        document.getElementById('txt-total').innerText = currencyFormat.format(totalFinal);
+        
+        return { subtotal, totalFinal, descontoReal };
+    }
+
+    function extractData() {
+        const { subtotal, totalFinal, descontoReal } = calculateTotal();
+        let itens = [];
+        document.querySelectorAll('#lista-itens tr').forEach(row => {
+            const n = row.querySelector('.input-nome').value.trim();
+            const q = row.querySelector('.input-qtd').value;
+            const v = row.querySelector('.input-valor').value;
+            if(n) itens.push({ n, q, v: parseFloat(v), s: parseFloat(q*v) });
+        });
+
+        return {
+            id: document.getElementById('num_orcamento').value || 'Sem Número', 
+            data: new Date().toLocaleDateString('pt-BR'),
+            cliente: { 
+                nome: document.getElementById('cliente_nome').value || 'Não Informado', 
+                doc: document.getElementById('cliente_doc').value || '-', 
+                contato: document.getElementById('cliente_contato').value || '-'
+            },
+            veiculo: { 
+                modelo: document.getElementById('veiculo_modelo').value || '-', 
+                placa: document.getElementById('veiculo_placa').value || '-'
+            },
+            condicoes: { 
+                prazo: document.getElementById('cond_prazo').value, 
+                pgto: document.getElementById('cond_pgto').value 
+            },
+            financeiro: { subtotal, totalFinal, descontoReal },
+            itens
+        };
+    }
+
+    // ==========================================
+    // WHATSAPP
+    // ==========================================
+    function getWhatsAppText() {
+        const d = extractData();
+        let msg = `*ORÇAMENTO 2 IRMÃOS MECÂNICA*\nNº ${d.id} | Data: ${d.data}\n\n`;
+        msg += `*Cliente:* ${d.cliente.nome}\n`;
+        msg += `*Veículo:* ${d.veiculo.modelo} | Placa: ${d.veiculo.placa.toUpperCase()}\n\n`;
+        msg += `*SERVIÇOS / PEÇAS:*\n`;
+        d.itens.forEach(i => {
+            msg += `• ${i.q}x ${i.n} = *${currencyFormat.format(i.s)}*\n`;
+        });
+        msg += `\n*RESUMO:*`;
+        msg += `\nSubtotal: ${currencyFormat.format(d.financeiro.subtotal)}`;
+        
+        if(d.financeiro.descontoReal > 0) {
+            msg += `\nDesconto: -${currencyFormat.format(d.financeiro.descontoReal)}`;
+        }
+        
+        msg += `\n*TOTAL FINAL: ${currencyFormat.format(d.financeiro.totalFinal)}*\n\n`;
+        msg += `_Condição de Pagamento:_ ${d.condicoes.pgto}\n`;
+        msg += `_Previsão de Entrega:_ ${d.condicoes.prazo}\n\n`;
+        msg += `Validade do orçamento: 5 dias.\nAguardamos sua aprovação! 🚗🔧`;
+        return msg;
+    }
+
+    function copiarWhatsApp() { 
+        navigator.clipboard.writeText(getWhatsAppText()).then(() => alert("Copiado com sucesso! Cole no seu WhatsApp.")); 
+    }
+    function enviarWhatsApp() { 
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(getWhatsAppText())}`, '_blank'); 
+    }
+
+    // ==========================================
+    // PDF (jsPDF) - VETORIAL CORRIGIDO (ESPAÇAMENTO)
+    // ==========================================
+    
+    function loadLogo() {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.src = 'assets/img/logo.png'; 
+            img.onload = () => resolve(img);
+            img.onerror = () => resolve(null);
+        });
+    }
+
+    async function gerarPDF() {
+        const btnPdf = document.getElementById('btn-pdf');
+        const btnOriginal = btnPdf.innerHTML;
+        btnPdf.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Gerando Documento...';
+        lucide.createIcons();
+
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+            const d = extractData();
+
+            const ML = 15; const MR = 15; const PW = 210; const CW = PW - ML - MR;
+            let y = 15; 
+
+            function text(str, x, yPos, size = 10, style = 'normal', color = [33, 33, 33], align = 'left') {
+                doc.setFont('helvetica', style);
+                doc.setFontSize(size);
+                doc.setTextColor(color[0], color[1], color[2]);
+                doc.text(String(str), x, yPos, { align: align });
+            }
+
+            // --- CABEÇALHO ---
+            const logoImg = await loadLogo();
+            if (logoImg) {
+                const imgH = 18;
+                const imgW = imgH * (logoImg.naturalWidth / logoImg.naturalHeight);
+                doc.addImage(logoImg, 'PNG', ML, y, imgW, imgH);
+            } else {
+                doc.setFillColor(211, 47, 47);
+                doc.rect(ML, y, 15, 15, 'F');
+                text('2I', ML + 7.5, y + 10.5, 16, 'bold', [255, 255, 255], 'center');
+            }
+            
+            const textStartX = ML + 30; 
+            text('AUTO MECÂNICA 2 IRMÃOS', textStartX, y + 6, 14, 'bold', [33,33,33]);
+            text('Tradição e Confiança desde 1991', textStartX, y + 11, 9, 'normal', [100,100,100]);
+            text('R. Paulo Nadolny, 3 - Bacacheri, Curitiba/PR', textStartX, y + 15, 9, 'normal', [100,100,100]);
+
+            text('ORÇAMENTO', PW - MR, y + 6, 16, 'bold', [211, 47, 47], 'right');
+            text('Nº ' + d.id, PW - MR, y + 11, 10, 'bold', [33,33,33], 'right');
+            text('Data: ' + d.data, PW - MR, y + 15, 9, 'normal', [100,100,100], 'right');
+
+            y += 25;
+            doc.setDrawColor(220, 220, 220);
+            doc.line(ML, y, PW - MR, y);
+            y += 8;
+
+            // --- BLOCOS DE DADOS ---
+            doc.setFillColor(245, 245, 245);
+            doc.rect(ML, y, CW/2 - 2, 25, 'F');
+            text('DADOS DO CLIENTE', ML + 3, y + 5, 8, 'bold', [150,150,150]);
+            text(d.cliente.nome, ML + 3, y + 11, 10, 'bold', [33,33,33]);
+            text('Doc: ' + d.cliente.doc, ML + 3, y + 16, 9, 'normal', [33,33,33]);
+            text('Tel: ' + d.cliente.contato, ML + 3, y + 21, 9, 'normal', [33,33,33]);
+
+            doc.setFillColor(245, 245, 245);
+            doc.rect(ML + CW/2 + 2, y, CW/2 - 2, 25, 'F');
+            text('DADOS DO VEÍCULO', ML + CW/2 + 5, y + 5, 8, 'bold', [150,150,150]);
+            text(d.veiculo.modelo, ML + CW/2 + 5, y + 11, 10, 'bold', [33,33,33]);
+            text('Placa: ' + d.veiculo.placa.toUpperCase(), ML + CW/2 + 5, y + 16, 9, 'normal', [33,33,33]);
+
+            y += 35;
+
+            // --- TABELA DE ITENS (CORREÇÃO DE ESPAÇAMENTO AQUI) ---
+            doc.setFillColor(33, 33, 33);
+            doc.rect(ML, y, CW, 8, 'F');
+            text('DESCRIÇÃO DO SERVIÇO / PEÇA', ML + 3, y + 5.5, 9, 'bold', [255,255,255]);
+            // Aumentando os espaçamentos (X) e alinhando Unitário à direita para não crescer sobre o Subtotal
+            text('QTD', PW - MR - 65, y + 5.5, 9, 'bold', [255,255,255], 'center');
+            text('V. UNIT.', PW - MR - 35, y + 5.5, 9, 'bold', [255,255,255], 'right');
+            text('SUBTOTAL', PW - MR - 3, y + 5.5, 9, 'bold', [255,255,255], 'right');
+            
+            y += 8;
+
+            d.itens.forEach((i, idx) => {
+                if (y > 260) { doc.addPage(); y = 20; } 
+                
+                if (idx % 2 === 0) doc.setFillColor(252, 252, 252);
+                else doc.setFillColor(255, 255, 255);
+                
+                doc.rect(ML, y, CW, 8, 'F');
+                
+                const maxLen = 45; // Reduzido levemente limite de texto para não bater no QTD
+                const desc = i.n.length > maxLen ? i.n.substring(0, maxLen) + '...' : i.n;
+
+                text(desc, ML + 3, y + 5.5, 9, 'normal', [33,33,33]);
+                text(i.q.toString(), PW - MR - 65, y + 5.5, 9, 'normal', [33,33,33], 'center');
+                // Alinhamento right no valor unitário também
+                text(currencyFormat.format(i.v), PW - MR - 35, y + 5.5, 9, 'normal', [33,33,33], 'right');
+                text(currencyFormat.format(i.s), PW - MR - 3, y + 5.5, 9, 'bold', [33,33,33], 'right');
+                
+                y += 8;
+            });
+
+            doc.setDrawColor(220, 220, 220);
+            doc.line(ML, y, PW - MR, y);
+            y += 10;
+
+            // --- TOTALIZADORES ---
+            if (y > 240) { doc.addPage(); y = 20; }
+            
+            const rightColX = PW - MR - 60;
+            
+            text('Subtotal:', rightColX, y, 10, 'normal', [33,33,33]);
+            text(currencyFormat.format(d.financeiro.subtotal), PW - MR, y, 10, 'normal', [33,33,33], 'right');
+            y += 6;
+            
+            if (d.financeiro.descontoReal > 0) {
+                text('Desconto:', rightColX, y, 10, 'normal', [211, 47, 47]);
+                text('-' + currencyFormat.format(d.financeiro.descontoReal), PW - MR, y, 10, 'normal', [211, 47, 47], 'right');
+                y += 8;
+            } else {
+                y += 2;
+            }
+            
+            doc.setFillColor(211, 47, 47);
+            doc.rect(rightColX - 5, y - 5, 70, 12, 'F');
+            text('TOTAL:', rightColX, y+3, 12, 'bold', [255,255,255]);
+            text(currencyFormat.format(d.financeiro.totalFinal), PW - MR - 2, y+3, 14, 'bold', [255,255,255], 'right');
+
+            y += 20;
+
+            // --- RODAPÉ E TERMOS ---
+            doc.setFillColor(245, 245, 245);
+            doc.rect(ML, y, CW, 15, 'F');
+            text('Termos Comerciais:', ML + 3, y + 5, 8, 'bold', [33,33,33]);
+            text(`Condição de Pagamento: ${d.condicoes.pgto} | Prazo Estimado: ${d.condicoes.prazo}`, ML + 3, y + 9, 8, 'normal', [33,33,33]);
+            text('Validade da Proposta: 5 dias úteis. Sujeito a alteração caso detectados defeitos ocultos.', ML + 3, y + 13, 8, 'normal', [100,100,100]);
+
+            // Salva PDF
+            doc.save(`Orcamento_2Irmaos_${d.id}.pdf`);
+
+        } catch (error) {
+            console.error("Erro no PDF:", error);
+            alert("Erro ao gerar PDF. O arquivo pode estar bloqueado pelo navegador.");
+        } finally {
+            btnPdf.innerHTML = btnOriginal;
+            lucide.createIcons();
+        }
+    }
+  </script>
+</body>
+</html>
